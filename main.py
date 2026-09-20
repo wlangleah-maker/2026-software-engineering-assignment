@@ -52,11 +52,24 @@ class ArrowGame(tk.Tk):
         return self.screen
 
     def decorate(self, canvas: tk.Canvas) -> None:
-        canvas.create_oval(-90, -70, 260, 210, fill="#fbd7e9", outline="")
-        canvas.create_oval(690, -80, 1030, 230, fill="#dcd7ff", outline="")
-        canvas.create_oval(700, 590, 1040, 900, fill="#d9f5f2", outline="")
-        for x, y, size, color in [(85, 300, 5, PINK), (760, 300, 7, PRIMARY), (110, 650, 6, CYAN), (810, 570, 5, PINK), (725, 90, 5, "#f4b95f")]:
-            self.draw_star(canvas, x, y, size, color)
+        self.draw_space_background(canvas, WINDOW_W, WINDOW_H)
+        # ?????????????????????
+        for x1, y1, x2, y2, color in [
+            (-130, -90, 310, 260, "#713a91"),
+            (650, -120, 1060, 260, "#275f94"),
+            (650, 500, 1080, 920, "#6a3d88"),
+            (-180, 560, 260, 930, "#1c6f88"),
+        ]:
+            canvas.create_oval(x1, y1, x2, y2, fill=color, outline="")
+        random.seed(20260920)
+        for _ in range(90):
+            x, y = random.randint(18, WINDOW_W-18), random.randint(18, WINDOW_H-18)
+            radius = random.choice([1, 1, 2, 2, 3, 5])
+            color = random.choice(["#ffffff", "#ffd7ef", "#b9f5ff", "#ead9ff", "#ffe5a8"])
+            if radius >= 5:
+                self.draw_star(canvas, x, y, radius, color)
+            else:
+                canvas.create_oval(x-radius, y-radius, x+radius, y+radius, fill=color, outline="")
 
     @staticmethod
     def draw_star(canvas: tk.Canvas, x: float, y: float, r: float, color: str) -> None:
@@ -66,6 +79,25 @@ class ArrowGame(tk.Tk):
             radius = r if i % 2 == 0 else r * .42
             pts.extend((x + math.cos(angle) * radius, y + math.sin(angle) * radius))
         canvas.create_polygon(*pts, fill=color, outline="")
+
+    @staticmethod
+    def color_mix(c1: str, c2: str, t: float) -> str:
+        a = tuple(int(c1[i:i+2], 16) for i in (1, 3, 5))
+        b = tuple(int(c2[i:i+2], 16) for i in (1, 3, 5))
+        values = tuple(round(a[i] + (b[i]-a[i])*t) for i in range(3))
+        return "#%02x%02x%02x" % values
+
+    def draw_space_background(self, canvas: tk.Canvas, width: int, height: int) -> None:
+        bands = 70
+        for i in range(bands):
+            t = i / max(1, bands-1)
+            if t < .55:
+                color = self.color_mix("#17163d", "#34245f", t/.55)
+            else:
+                color = self.color_mix("#34245f", "#173f62", (t-.55)/.45)
+            y1 = height*i/bands
+            y2 = height*(i+1)/bands + 1
+            canvas.create_rectangle(0, y1, width, y2, fill=color, outline="")
 
     def make_button(self, parent, text, command, width=15, secondary=False):
         bg = "#efe9fb" if secondary else PRIMARY
@@ -152,34 +184,64 @@ class ArrowGame(tk.Tk):
         return BOARD_X + col * CELL + CELL / 2, BOARD_Y + row * CELL + CELL / 2
 
     def draw_arrow(self, x, y, direction, color, ox=0, oy=0):
+        """???????????????????????????"""
         dx, dy = VECTORS[direction]
         px, py = -dy, dx
         x, y = x + ox, y + oy
-        tail_x, tail_y = x - dx * 25, y - dy * 25
-        tip_x, tip_y = x + dx * 28, y + dy * 28
-        neck_x, neck_y = x + dx * 9, y + dy * 9
-        self.canvas.create_oval(x - 34, y - 34, x + 34, y + 34, fill="#fffafd", outline="#eadcf0", width=2)
-        self.canvas.create_line(tail_x, tail_y, neck_x, neck_y, fill=color, width=9, capstyle=tk.ROUND)
-        self.canvas.create_polygon(tip_x, tip_y, neck_x + px*17, neck_y + py*17,
-                                   neck_x - px*17, neck_y - py*17, fill=color, outline=color)
-        self.canvas.create_oval(tail_x-4, tail_y-4, tail_x+4, tail_y+4, fill="#fff", outline="")
+        head_x, head_y = x + dx*15, y + dy*15
+        tail_x, tail_y = x - dx*31, y - dy*31
+
+        # ???????????????????
+        self.canvas.create_line(tail_x-dx*13, tail_y-dy*13, head_x-dx*7, head_y-dy*7,
+                                fill="#d9f8ff", width=4, capstyle=tk.ROUND)
+        self.canvas.create_line(tail_x, tail_y, head_x-dx*5, head_y-dy*5,
+                                fill=color, width=11, capstyle=tk.ROUND)
+        self.canvas.create_line(tail_x+px*9, tail_y+py*9, head_x-dx*9+px*3, head_y-dy*9+py*3,
+                                fill="#ffd8ef", width=3, capstyle=tk.ROUND)
+        self.canvas.create_line(tail_x-px*9, tail_y-py*9, head_x-dx*9-px*3, head_y-dy*9-py*3,
+                                fill="#bff5ff", width=3, capstyle=tk.ROUND)
+
+        # ????????????????????
+        for radius, glow in [(26, "#eadfff"), (20, "#f7eaff"), (14, "#fff8d8")]:
+            self.canvas.create_oval(head_x-radius, head_y-radius, head_x+radius, head_y+radius,
+                                    fill=glow, outline="")
+        tip_x, tip_y = head_x + dx*22, head_y + dy*22
+        back_x, back_y = head_x - dx*15, head_y - dy*15
+        self.canvas.create_polygon(
+            tip_x, tip_y,
+            head_x + px*14, head_y + py*14,
+            back_x, back_y,
+            head_x - px*14, head_y - py*14,
+            fill=color, outline="#ffffff", width=2,
+        )
+        self.canvas.create_oval(head_x-5, head_y-5, head_x+5, head_y+5, fill="#ffffff", outline="")
+        self.draw_star(self.canvas, tail_x-dx*5+px*4, tail_y-dy*5+py*4, 4, "#ffffff")
 
     def redraw(self, animated_id=None, offset=(0, 0), animated_color=None) -> None:
         if not self.model:
             return
         self.canvas.delete("all")
-        self.canvas.create_oval(15, 40, 145, 100, fill="#fff", outline="")
-        self.canvas.create_oval(80, 25, 210, 105, fill="#fff", outline="")
-        self.canvas.create_oval(690, 470, 840, 545, fill="#e8f8f7", outline="")
-        for sx, sy in [(95, 175), (770, 115), (115, 500), (785, 380)]:
-            self.draw_star(self.canvas, sx, sy, 7, "#efafd0")
+        self.draw_space_background(self.canvas, WINDOW_W, 610)
+        # ????????????????????????
+        self.canvas.create_oval(-120, -100, 250, 260, fill="#573274", outline="")
+        self.canvas.create_oval(680, 330, 1010, 680, fill="#175b78", outline="")
+        self.canvas.create_oval(700, -120, 1040, 220, fill="#33478a", outline="")
+        random.seed(1000 + self.level_index)
+        for _ in range(58):
+            sx, sy = random.randint(15, 875), random.randint(12, 590)
+            sr = random.choice([1, 1, 2, 2, 4])
+            sc = random.choice(["#ffffff", "#ffcce8", "#bcefff", "#ffe4a3"])
+            if sr == 4:
+                self.draw_star(self.canvas, sx, sy, sr, sc)
+            else:
+                self.canvas.create_oval(sx-sr, sy-sr, sx+sr, sy+sr, fill=sc, outline="")
 
         self.canvas.create_rectangle(BOARD_X-16, BOARD_Y-16, BOARD_X+BOARD_W+16, BOARD_Y+BOARD_H+16,
-                                     fill="#e8dff7", outline="")
+                                     fill="#76558f", outline="")
         self.canvas.create_rectangle(BOARD_X-8, BOARD_Y-8, BOARD_X+BOARD_W+8, BOARD_Y+BOARD_H+8,
-                                     fill="#fffafd", outline="#d5bce9", width=3)
+                                     fill="#2d2858", outline="#e5baff", width=3)
         self.canvas.create_rectangle(BOARD_X, BOARD_Y, BOARD_X+BOARD_W, BOARD_Y+BOARD_H,
-                                     fill="#fffbfe", outline="#d8c7e4", width=2)
+                                     fill="#fdf8ff", outline="#d8c7e4", width=2)
         for r in range(GRID_ROWS + 1):
             y = BOARD_Y + r * CELL
             self.canvas.create_line(BOARD_X, y, BOARD_X+BOARD_W, y, fill=GRID)
