@@ -193,38 +193,17 @@ class ArrowGame(tk.Tk):
         return BOARD_X + col * CELL + CELL / 2, BOARD_Y + row * CELL + CELL / 2
 
     def draw_arrow(self, x, y, direction, color, ox=0, oy=0):
-        """???????????????????????????"""
-        dx, dy = VECTORS[direction]
-        px, py = -dy, dx
+        """???????????????????"""
         x, y = x + ox, y + oy
-        head_x, head_y = x + dx*15, y + dy*15
-        tail_x, tail_y = x - dx*31, y - dy*31
-
-        # ???????????????????
-        self.canvas.create_line(tail_x-dx*13, tail_y-dy*13, head_x-dx*7, head_y-dy*7,
-                                fill="#d9f8ff", width=4, capstyle=tk.ROUND)
-        self.canvas.create_line(tail_x, tail_y, head_x-dx*5, head_y-dy*5,
-                                fill=color, width=11, capstyle=tk.ROUND)
-        self.canvas.create_line(tail_x+px*9, tail_y+py*9, head_x-dx*9+px*3, head_y-dy*9+py*3,
-                                fill="#ffd8ef", width=3, capstyle=tk.ROUND)
-        self.canvas.create_line(tail_x-px*9, tail_y-py*9, head_x-dx*9-px*3, head_y-dy*9-py*3,
-                                fill="#bff5ff", width=3, capstyle=tk.ROUND)
-
-        # ????????????????????
-        for radius, glow in [(26, "#eadfff"), (20, "#f7eaff"), (14, "#fff8d8")]:
-            self.canvas.create_oval(head_x-radius, head_y-radius, head_x+radius, head_y+radius,
-                                    fill=glow, outline="")
-        tip_x, tip_y = head_x + dx*22, head_y + dy*22
-        back_x, back_y = head_x - dx*15, head_y - dy*15
-        self.canvas.create_polygon(
-            tip_x, tip_y,
-            head_x + px*14, head_y + py*14,
-            back_x, back_y,
-            head_x - px*14, head_y - py*14,
-            fill=color, outline="#ffffff", width=2,
-        )
-        self.canvas.create_oval(head_x-5, head_y-5, head_x+5, head_y+5, fill="#ffffff", outline="")
-        self.draw_star(self.canvas, tail_x-dx*5+px*4, tail_y-dy*5+py*4, 4, "#ffffff")
+        prefix = "meteor_hit" if color == DANGER else "meteor"
+        image = self.get_background(f"{prefix}_{direction}.png")
+        if image:
+            self.canvas.create_image(x, y, image=image, anchor="center")
+            return
+        # ??????????????
+        dx, dy = VECTORS[direction]
+        self.canvas.create_line(x-dx*34, y-dy*34, x, y, fill="#9ca8ff", width=10)
+        self.draw_star(self.canvas, x+dx*14, y+dy*14, 23, color)
 
     def redraw(self, animated_id=None, offset=(0, 0), animated_color=None) -> None:
         if not self.model:
@@ -243,18 +222,17 @@ class ArrowGame(tk.Tk):
         ]:
             self.draw_star(self.canvas, sx, sy, sr, sc)
 
-        self.canvas.create_rectangle(BOARD_X-16, BOARD_Y-16, BOARD_X+BOARD_W+16, BOARD_Y+BOARD_H+16,
-                                     fill="#76558f", outline="")
-        self.canvas.create_rectangle(BOARD_X-8, BOARD_Y-8, BOARD_X+BOARD_W+8, BOARD_Y+BOARD_H+8,
-                                     fill="#2d2858", outline="#e5baff", width=3)
+        # ????????????????????????
+        self.canvas.create_rectangle(BOARD_X-12, BOARD_Y-12, BOARD_X+BOARD_W+12, BOARD_Y+BOARD_H+12,
+                                     fill="#8e7ccc", stipple="gray25", outline="#efe7ff", width=3)
         self.canvas.create_rectangle(BOARD_X, BOARD_Y, BOARD_X+BOARD_W, BOARD_Y+BOARD_H,
-                                     fill="#fdf8ff", outline="#d8c7e4", width=2)
+                                     fill="#e9e3ff", stipple="gray50", outline="#d9ceff", width=2)
         for r in range(GRID_ROWS + 1):
             y = BOARD_Y + r * CELL
-            self.canvas.create_line(BOARD_X, y, BOARD_X+BOARD_W, y, fill=GRID)
+            self.canvas.create_line(BOARD_X, y, BOARD_X+BOARD_W, y, fill="#ddd5ff", width=2)
         for c in range(GRID_COLS + 1):
             x = BOARD_X + c * CELL
-            self.canvas.create_line(x, BOARD_Y, x, BOARD_Y+BOARD_H, fill=GRID)
+            self.canvas.create_line(x, BOARD_Y, x, BOARD_Y+BOARD_H, fill="#ddd5ff", width=2)
 
         for arrow in self.model.arrows.values():
             x, y = self.board_center(arrow.row, arrow.col)
