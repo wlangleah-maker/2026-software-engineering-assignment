@@ -32,7 +32,7 @@ VECTORS = {"up": (0, -1), "down": (0, 1), "left": (-1, 0), "right": (1, 0)}
 class ArrowGame(tk.Tk):
     def __init__(self) -> None:
         super().__init__()
-        self.title("一箭又一箭 · 星愿篇")
+        self.title("星愿：一箭又一箭")
         self.geometry(f"{WINDOW_W}x{WINDOW_H}")
         self.minsize(WINDOW_W, WINDOW_H)
         self.resizable(True, True)
@@ -132,8 +132,8 @@ class ArrowGame(tk.Tk):
 
         card = tk.Frame(frame, bg=PANEL, highlightbackground="#f0d8e7", highlightthickness=2)
         card.place(relx=.5, y=315, anchor="n", width=610, height=390)
-        tk.Label(card, text="一箭又一箭", font=("Microsoft YaHei UI", 35, "bold"), fg=PRIMARY, bg=PANEL).pack(pady=(35, 0))
-        tk.Label(card, text="✦ 星 愿 篇 ✦", font=("Microsoft YaHei UI", 14, "bold"), fg=PINK, bg=PANEL).pack(pady=4)
+        tk.Label(card, text="星愿：一箭又一箭", font=("Microsoft YaHei UI", 35, "bold"), fg=PRIMARY, bg=PANEL).pack(pady=(35, 0))
+        tk.Label(card, text="✦ 流 星 解 谜 ✦", font=("Microsoft YaHei UI", 14, "bold"), fg=PINK, bg=PANEL).pack(pady=4)
         tk.Label(card, text="观察箭头的方向与阻挡关系，按正确顺序让它们飞向星空。",
                  font=("Microsoft YaHei UI", 12), fg=MUTED, bg=PANEL).pack(pady=18)
         tk.Label(card, text="5 个关卡  ·  每关星级评价  ·  最终通关纪念画面",
@@ -373,3 +373,4 @@ if __name__ == "__main__":
         ArrowGame().mainloop()
     except tk.TclError as exc:
         messagebox.showerror("启动失败", f"无法创建图形界面：{exc}")
+
