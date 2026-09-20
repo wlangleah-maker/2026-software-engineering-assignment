@@ -10,7 +10,7 @@ from levels import GRID_COLS, GRID_ROWS, LEVELS, MAX_MISTAKES
 WINDOW_W = 820
 WINDOW_H = 720
 BOARD_X = 160
-BOARD_Y = 155
+BOARD_Y = 28
 CELL = 100
 BOARD_W = GRID_COLS * CELL
 BOARD_H = GRID_ROWS * CELL
@@ -39,7 +39,7 @@ class ArrowGame(tk.Tk):
         super().__init__()
         self.title("一箭又一箭")
         self.geometry(f"{WINDOW_W}x{WINDOW_H}")
-        self.resizable(False, False)
+        self.resizable(True, True)`r`n        self.minsize(WINDOW_W, WINDOW_H)
         self.configure(bg=BG)
         self.level_index = 0
         self.model: GameModel | None = None
@@ -123,7 +123,7 @@ class ArrowGame(tk.Tk):
         self.mistakes_label.pack(side="right")
 
         self.canvas = tk.Canvas(frame, width=WINDOW_W, height=570, bg=BG, highlightthickness=0)
-        self.canvas.pack()
+        self.canvas.pack(fill="both", expand=True)
         self.canvas.bind("<Button-1>", self.on_click)
 
     def restart_level(self) -> None:
@@ -283,3 +283,4 @@ if __name__ == "__main__":
         ArrowGame().mainloop()
     except tk.TclError as exc:
         messagebox.showerror("启动失败", f"无法创建图形界面：{exc}")
+
