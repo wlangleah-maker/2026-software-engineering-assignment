@@ -39,7 +39,8 @@ class ArrowGame(tk.Tk):
         super().__init__()
         self.title("一箭又一箭")
         self.geometry(f"{WINDOW_W}x{WINDOW_H}")
-        self.resizable(True, True)`r`n        self.minsize(WINDOW_W, WINDOW_H)
+        self.resizable(True, True)
+        self.minsize(WINDOW_W, WINDOW_H)
         self.configure(bg=BG)
         self.level_index = 0
         self.model: GameModel | None = None
@@ -283,4 +284,5 @@ if __name__ == "__main__":
         ArrowGame().mainloop()
     except tk.TclError as exc:
         messagebox.showerror("启动失败", f"无法创建图形界面：{exc}")
+
 
