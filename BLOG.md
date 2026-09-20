@@ -8,7 +8,7 @@
 | 这个作业要求在哪里 | [第二次个人作业：利用 AIGC 完成小游戏](https://edu.cnblogs.com/campus/fzu/2026-01SoftwareEngineeringandSoftwareEngineeringPractice/homework/16718) |
 | 这个作业的目标 | 使用 Python 和 AIGC 完成“星愿：一箭又一箭”小游戏 |
 | 学号 | XXXXXXXX（请替换为真实学号） |
-| GitHub 仓库 | 请补充 GitHub 仓库链接 |
+| GitHub 仓库 | [https://github.com/wlangleah-maker/2026-software-engineering-assignment](https://github.com/wlangleah-maker/2026-software-engineering-assignment) |
 | 截止时间 | 2026-09-22 23:59:59 |
 
 ## 二、项目展示
@@ -155,7 +155,7 @@ python -m unittest -v test_game.py
 ## 九、提交前检查
 
 - [ ] 将学号 `XXXXXXXX` 替换为真实学号；
-- [ ] GitHub 仓库创建后补充仓库链接（课程链接和作业链接已填写）；
+- [x] 已补充课程链接、作业链接和 GitHub 仓库链接；
 - [x] 已运行全部自动化测试；
 - [x] 已实际试玩 5 个关卡，运行正常；
 - [ ] 已补充开始、游戏、碰撞、单关评分和最终通关截图；仍需补充失败界面截图；
@@ -163,6 +163,7 @@ python -m unittest -v test_game.py
 - [ ] 检查仓库中不存在密码、Cookie、Token 或 API Key；
 - [ ] 完成多次有意义的 Git Commit；
 - [ ] 确认按照 README 可以正常启动程序。
+
 
 
 

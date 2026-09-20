@@ -78,3 +78,8 @@ one_arrow_game/
 当前星空室内背景根据用户提供的参考图片制作，原始文件名为 `【哲风壁纸】室内-室内场景.jpg`。该素材仅用于本课程作业展示，不用于公开发布；如果后续公开 GitHub 仓库，应先删除或替换为具有明确许可的背景素材。
 
 
+
+## 仓库地址
+
+https://github.com/wlangleah-maker/2026-software-engineering-assignment
+
