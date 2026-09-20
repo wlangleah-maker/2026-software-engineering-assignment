@@ -2,6 +2,7 @@
 
 import math
 import random
+from pathlib import Path
 import tkinter as tk
 from tkinter import messagebox
 
@@ -42,6 +43,7 @@ class ArrowGame(tk.Tk):
         self.screen: tk.Frame | None = None
         self.level_scores: list[int] = []
         self.level_stars: list[int] = []
+        self.bg_images: dict[str, tk.PhotoImage] = {}
         self.show_start()
 
     def clear_screen(self) -> tk.Frame:
@@ -51,25 +53,32 @@ class ArrowGame(tk.Tk):
         self.screen.pack(fill="both", expand=True)
         return self.screen
 
+    def get_background(self, name: str) -> tk.PhotoImage | None:
+        if name in self.bg_images:
+            return self.bg_images[name]
+        path = Path(__file__).resolve().parent / "assets" / name
+        if not path.exists():
+            return None
+        try:
+            image = tk.PhotoImage(file=str(path))
+            self.bg_images[name] = image
+            return image
+        except tk.TclError:
+            return None
+
     def decorate(self, canvas: tk.Canvas) -> None:
-        self.draw_space_background(canvas, WINDOW_W, WINDOW_H)
-        # ?????????????????????
-        for x1, y1, x2, y2, color in [
-            (-130, -90, 310, 260, "#713a91"),
-            (650, -120, 1060, 260, "#275f94"),
-            (650, 500, 1080, 920, "#6a3d88"),
-            (-180, 560, 260, 930, "#1c6f88"),
+        image = self.get_background("cosmic_room_900x790.png")
+        if image:
+            canvas.create_image(0, 0, image=image, anchor="nw")
+        else:
+            self.draw_space_background(canvas, WINDOW_W, WINDOW_H)
+        # ???????????????????????????
+        for x, y, size, color in [
+            (84, 92, 5, "#d8f8ff"), (780, 126, 7, "#fff3be"),
+            (120, 530, 4, "#ffd8f1"), (820, 610, 6, "#c9f7ff"),
+            (690, 330, 5, "#ead8ff"),
         ]:
-            canvas.create_oval(x1, y1, x2, y2, fill=color, outline="")
-        random.seed(20260920)
-        for _ in range(90):
-            x, y = random.randint(18, WINDOW_W-18), random.randint(18, WINDOW_H-18)
-            radius = random.choice([1, 1, 2, 2, 3, 5])
-            color = random.choice(["#ffffff", "#ffd7ef", "#b9f5ff", "#ead9ff", "#ffe5a8"])
-            if radius >= 5:
-                self.draw_star(canvas, x, y, radius, color)
-            else:
-                canvas.create_oval(x-radius, y-radius, x+radius, y+radius, fill=color, outline="")
+            self.draw_star(canvas, x, y, size, color)
 
     @staticmethod
     def draw_star(canvas: tk.Canvas, x: float, y: float, r: float, color: str) -> None:
@@ -221,20 +230,18 @@ class ArrowGame(tk.Tk):
         if not self.model:
             return
         self.canvas.delete("all")
-        self.draw_space_background(self.canvas, WINDOW_W, 610)
-        # ????????????????????????
-        self.canvas.create_oval(-120, -100, 250, 260, fill="#573274", outline="")
-        self.canvas.create_oval(680, 330, 1010, 680, fill="#175b78", outline="")
-        self.canvas.create_oval(700, -120, 1040, 220, fill="#33478a", outline="")
-        random.seed(1000 + self.level_index)
-        for _ in range(58):
-            sx, sy = random.randint(15, 875), random.randint(12, 590)
-            sr = random.choice([1, 1, 2, 2, 4])
-            sc = random.choice(["#ffffff", "#ffcce8", "#bcefff", "#ffe4a3"])
-            if sr == 4:
-                self.draw_star(self.canvas, sx, sy, sr, sc)
-            else:
-                self.canvas.create_oval(sx-sr, sy-sr, sx+sr, sy+sr, fill=sc, outline="")
+        image = self.get_background("cosmic_room_900x610.png")
+        if image:
+            self.canvas.create_image(0, 0, image=image, anchor="nw")
+        else:
+            self.draw_space_background(self.canvas, WINDOW_W, 610)
+        # ??????????????
+        for sx, sy, sr, sc in [
+            (82, 90, 5, "#ffffff"), (785, 78, 6, "#bff6ff"),
+            (105, 395, 4, "#ffd5ee"), (810, 470, 5, "#fff0b5"),
+            (742, 260, 3, "#e7d8ff"), (150, 245, 3, "#c9f7ff"),
+        ]:
+            self.draw_star(self.canvas, sx, sy, sr, sc)
 
         self.canvas.create_rectangle(BOARD_X-16, BOARD_Y-16, BOARD_X+BOARD_W+16, BOARD_Y+BOARD_H+16,
                                      fill="#76558f", outline="")
