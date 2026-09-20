@@ -13,15 +13,33 @@
 
 ## 二、项目展示
 
-本项目使用 Python 标准库 Tkinter 实现，无需下载额外的图形库。程序包含开始界面、游戏界面、通关界面和失败界面。
+本项目使用 Python 标准库 Tkinter 实现，无需下载额外的图形库。程序包含开始界面、游戏界面、单关评分界面、最终通关界面和失败界面。
 
-提交博客前应补充以下真实运行截图或 GIF：
+### 开始界面
 
-1. 开始界面截图；
-2. 游戏过程截图；
-3. 碰撞动画截图或 GIF；
-4. 通关界面截图；
-5. 失败界面截图。
+![开始界面](screenshots/start.png)
+
+### 游戏过程
+
+![第一关游戏画面](screenshots/game-stage1.png)
+
+![第五关游戏画面](screenshots/game-stage5.png)
+
+### 碰撞反馈
+
+![流星碰撞反馈](screenshots/collision.png)
+
+### 单关评分
+
+![三星评价](screenshots/level-perfect.png)
+
+![普通通关评价](screenshots/level-clear.png)
+
+### 最终通关画面
+
+![最终通关画面](screenshots/final-clear.png)
+
+> 五个关卡已实际试玩，关卡切换、评分、最终通关和失败重试功能均运行正常。失败界面截图将在最终发布博客前补充。
 
 ## 三、项目介绍
 
@@ -145,5 +163,6 @@ python -m unittest -v test_game.py
 - [ ] 检查仓库中不存在密码、Cookie、Token 或 API Key；
 - [ ] 完成多次有意义的 Git Commit；
 - [ ] 确认按照 README 可以正常启动程序。
+
 
 
